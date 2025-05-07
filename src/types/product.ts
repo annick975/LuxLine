@@ -1,4 +1,4 @@
-export interface Review {
+export type Review = {
   id: string;
   name: string;
   rating: number;
@@ -6,7 +6,7 @@ export interface Review {
   date: string;
 }
 
-export interface Product {
+export type Product = {
   id: string;
   name: string;
   description: string;
@@ -14,4 +14,6 @@ export interface Product {
   image: string;
   reviews: Review[];
   category: string;
+  discountPercentage?: number;
+  createdAt?: string;
 } 

@@ -4,8 +4,19 @@ import React, {
   useReducer,
   ReactNode,
   useEffect,
+  useState,
 } from "react";
 import type { Product } from "../types/product";
+import { products } from "../data/mockData";
+import { ToastMessage } from "../components/ToastMessage";
+import { v4 as uuidv4 } from "uuid";
+
+// Define the Toast type directly here to avoid import issues
+type Toast = {
+  id: string;
+  message: string;
+  type: "success" | "error" | "info";
+};
 
 interface CartItem extends Product {
   quantity: number;
@@ -14,6 +25,7 @@ interface CartItem extends Product {
 interface AppState {
   cart: CartItem[];
   isDarkMode: boolean;
+  products: Product[];
 }
 
 type AppAction =
@@ -25,11 +37,13 @@ type AppAction =
 const initialState: AppState = {
   cart: [],
   isDarkMode: false,
+  products: products,
 };
 
 const AppContext = createContext<{
   state: AppState;
   dispatch: React.Dispatch<AppAction>;
+  showToast: (message: string, type: Toast["type"]) => void;
 } | null>(null);
 
 function appReducer(state: AppState, action: AppAction): AppState {
@@ -86,6 +100,29 @@ function appReducer(state: AppState, action: AppAction): AppState {
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
+  const [toasts, setToasts] = useState<Toast[]>([]);
+
+  // Toast management functions
+  const showToast = (message: string, type: Toast["type"] = "info") => {
+    const newToast = {
+      id: uuidv4(),
+      message,
+      type,
+    };
+    setToasts((prev) => [...prev, newToast]);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  };
+
+  // Add toast notification when cart is updated
+  useEffect(() => {
+    // We don't want to show a toast on initial load
+    const handleCartChanges = () => {};
+
+    return () => {};
+  }, []);
 
   // Apply dark mode on initial load
   useEffect(() => {
@@ -94,9 +131,45 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  // Modified dispatch function that shows toasts for cart actions
+  const dispatchWithToast: React.Dispatch<AppAction> = (action) => {
+    dispatch(action);
+
+    // Show toasts for cart actions
+    if (action.type === "ADD_TO_CART") {
+      showToast(`${action.payload.name} added to cart`, "success");
+    } else if (action.type === "REMOVE_FROM_CART") {
+      const productName =
+        state.cart.find((item) => item.id === action.payload)?.name || "Item";
+      showToast(`${productName} removed from cart`, "info");
+    } else if (action.type === "UPDATE_QUANTITY") {
+      const item = state.cart.find((item) => item.id === action.payload.id);
+      if (item) {
+        showToast(
+          `${item.name} quantity updated to ${action.payload.quantity}`,
+          "success"
+        );
+      }
+    }
+  };
+
   return (
-    <AppContext.Provider value={{ state, dispatch }}>
+    <AppContext.Provider
+      value={{ state, dispatch: dispatchWithToast, showToast }}
+    >
       {children}
+
+      {/* Toast container */}
+      <div className="toast-container">
+        {toasts.map((toast) => (
+          <ToastMessage
+            key={toast.id}
+            message={toast.message}
+            type={toast.type}
+            onClose={() => removeToast(toast.id)}
+          />
+        ))}
+      </div>
     </AppContext.Provider>
   );
 }
