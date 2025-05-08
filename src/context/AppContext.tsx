@@ -40,7 +40,7 @@ type AppAction =
 
 const initialState: AppState = {
   cart: [],
-  isDarkMode: false,
+  isDarkMode: true,
   products: products,
 };
 
@@ -149,10 +149,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   // Apply dark mode on initial load
   useEffect(() => {
+    // Make sure dark mode class is added to the document element on initial load
     if (state.isDarkMode) {
       document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
     }
-  }, []);
+  }, [state.isDarkMode]);
 
   // Modified dispatch function that shows toasts for cart actions
   const dispatchWithToast: React.Dispatch<AppAction> = (action) => {

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import type { Product } from "../types/product";
 import { useApp } from "../context/AppContext";
 
@@ -14,7 +15,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const { dispatch } = useApp();
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation when clicking the add to cart button
+    e.stopPropagation(); // Prevent event bubbling
     dispatch({ type: "ADD_TO_CART", payload: product });
   };
 
@@ -51,8 +54,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   return (
-    <div
-      className={`bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 ${
+    <Link 
+      to={`/products/${product.id}`}
+      className={`block bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 ${
         isHovered ? "shadow-xl transform -translate-y-1" : ""
       } ${fullWidth ? "w-full" : ""}`}
       onMouseEnter={() => setIsHovered(true)}
@@ -79,7 +83,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Quick actions */}
         <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-x-2 group-hover:translate-x-0">
-          <button className="bg-white/90 dark:bg-gray-800/90 p-1.5 rounded-full shadow-md hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors backdrop-blur-sm">
+          <button 
+            className="bg-white/90 dark:bg-gray-800/90 p-1.5 rounded-full shadow-md hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors backdrop-blur-sm"
+            onClick={(e) => e.stopPropagation()}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4 text-gray-700 dark:text-gray-300"
@@ -95,7 +102,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               />
             </svg>
           </button>
-          <button className="bg-white/90 dark:bg-gray-800/90 p-1.5 rounded-full shadow-md hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors backdrop-blur-sm">
+          <button 
+            className="bg-white/90 dark:bg-gray-800/90 p-1.5 rounded-full shadow-md hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors backdrop-blur-sm"
+            onClick={(e) => e.stopPropagation()}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4 text-gray-700 dark:text-gray-300"
@@ -171,6 +181,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };

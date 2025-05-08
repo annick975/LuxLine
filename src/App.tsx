@@ -1,10 +1,17 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Header } from "./components/Header";
 import { HomePage } from "./pages/HomePage";
 import { ProductsPage } from "./pages/ProductsPage";
 import { ProductPage } from "./pages/ProductPage";
-import { AppProvider } from "./context/AppContext";
+import { AppProvider, useApp } from "./context/AppContext";
+
+// Add script to apply dark mode initially
+// This will run before React hydrates the app
+if (typeof document !== "undefined") {
+  // Set default to dark mode
+  document.documentElement.classList.add("dark");
+}
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
