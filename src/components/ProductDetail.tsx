@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import type { Product, Review } from "../types/product";
 import { useApp } from "../context/AppContext";
-import { ReviewList } from "./ReviewList";
 
 interface ProductDetailProps {
   product: Product;
@@ -302,10 +301,6 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="p-6 md:p-8 border-t border-gray-200 dark:border-gray-700">
-        <ReviewList reviews={product.reviews} onAddReview={onAddReview} />
       </div>
     </div>
   );

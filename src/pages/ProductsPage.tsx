@@ -68,7 +68,9 @@ export const ProductsPage: React.FC = () => {
 
     // Filter by sale if saleParam exists
     if (saleParam === "true") {
-      result = result.filter((product) => product.discountPercentage > 0);
+      result = result.filter(
+        (product) => (product.discountPercentage || 0) > 0
+      );
     }
 
     // Sort products
@@ -80,10 +82,11 @@ export const ProductsPage: React.FC = () => {
         result.sort((a, b) => b.price - a.price);
         break;
       case "newest":
-        result.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
+        result.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return dateB - dateA;
+        });
         break;
       case "rating":
         result.sort((a, b) => {
@@ -111,16 +114,39 @@ export const ProductsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Hero banner */}
-      <div className="bg-blue-600 dark:bg-blue-800">
-        <div className="container mx-auto px-4 py-12 md:py-16 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Our Premium Collection
-          </h1>
-          <p className="text-blue-100 max-w-2xl mx-auto">
-            Explore our handpicked selection of luxury products, curated for the
-            discerning customer.
-          </p>
+      {/* Enhanced Hero banner */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-purple-700 dark:from-blue-900 dark:via-blue-800 dark:to-purple-900">
+        {/* Decorative elements */}
+        <div className="absolute top-0 left-0 w-full h-full">
+          <div className="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 right-10 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-blue-300/10 rounded-full blur-3xl"></div>
+        </div>
+
+        {/* Glass panel */}
+        <div className="relative container mx-auto px-4 py-16 md:py-24">
+          <div className="max-w-3xl mx-auto backdrop-blur-sm bg-white/10 dark:bg-black/10 rounded-2xl p-8 md:p-12 border border-white/20 dark:border-white/10 shadow-xl">
+            <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 text-center leading-tight tracking-tight">
+              Our Premium Collection
+            </h1>
+            <p className="text-xl text-blue-50 max-w-2xl mx-auto text-center font-light leading-relaxed">
+              Explore our handpicked selection of luxury products, curated for
+              the
+              <span className="relative inline-block px-2">
+                <span className="absolute inset-0 transform -skew-x-12 bg-gradient-to-r from-blue-400/30 to-purple-400/30 rounded"></span>
+                <span className="relative"> discerning customer</span>
+              </span>
+            </p>
+
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <button className="px-6 py-3 bg-white/90 hover:bg-white text-blue-700 font-medium rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-lg shadow-md">
+                Shop New Arrivals
+              </button>
+              <button className="px-6 py-3 bg-transparent hover:bg-white/10 text-white border border-white/50 font-medium rounded-full transition-all duration-300 transform hover:scale-105">
+                View Exclusives
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 

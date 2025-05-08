@@ -4,16 +4,17 @@ import { ProductDetail } from "../components/ProductDetail";
 import { ProductCard } from "../components/ProductCard";
 import { ReviewList } from "../components/ReviewList";
 import { useApp } from "../context/AppContext";
+import type { Product, Review } from "../types/product";
 
 export const ProductPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { state } = useApp();
+  const { state, dispatch } = useApp();
   const navigate = useNavigate();
-  const [product, setProduct] = useState(
+  const [product, setProduct] = useState<Product | undefined>(
     state.products.find((p) => p.id === id)
   );
   const [activeTab, setActiveTab] = useState("description");
-  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Get the product
@@ -54,6 +55,36 @@ export const ProductPage: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
+
+  // Handler for adding a review
+  const handleAddReview = (review: Omit<Review, "id" | "date">) => {
+    if (product) {
+      dispatch({
+        type: "ADD_REVIEW",
+        payload: {
+          productId: product.id,
+          review,
+        },
+      });
+
+      // Update the local product state to reflect the new review immediately
+      setProduct((prevProduct) => {
+        if (!prevProduct) return prevProduct;
+
+        const currentDate = new Date().toISOString().split("T")[0]; // Format as YYYY-MM-DD
+        const newReview: Review = {
+          id: crypto.randomUUID(), // This is temporary and will be replaced by the server
+          ...review,
+          date: currentDate,
+        };
+
+        return {
+          ...prevProduct,
+          reviews: [...prevProduct.reviews, newReview],
+        };
+      });
+    }
+  };
 
   if (!product && !isLoading) {
     // Product not found UI
@@ -159,7 +190,7 @@ export const ProductPage: React.FC = () => {
           product && (
             <>
               {/* Product detail section */}
-              <ProductDetail product={product} />
+              <ProductDetail product={product} onAddReview={handleAddReview} />
 
               {/* Product tabs (Description, Specs, Reviews) */}
               <div className="mt-16">
@@ -263,7 +294,9 @@ export const ProductPage: React.FC = () => {
                                 Released
                               </span>
                               <span className="text-gray-900 dark:text-white font-medium">
-                                {new Date(product.createdAt).getFullYear()}
+                                {product.createdAt
+                                  ? new Date(product.createdAt).getFullYear()
+                                  : "N/A"}
                               </span>
                             </div>
                             <div className="flex justify-between">
@@ -363,8 +396,8 @@ export const ProductPage: React.FC = () => {
                   {activeTab === "reviews" && (
                     <div>
                       <ReviewList
-                        productId={product.id}
                         reviews={product.reviews}
+                        onAddReview={handleAddReview}
                       />
                     </div>
                   )}

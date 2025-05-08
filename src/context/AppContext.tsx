@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import type { Product } from "../types/product";
+import type { Product, Review } from "../types/product";
 import { products } from "../data/mockData";
 import { ToastMessage } from "../components/ToastMessage";
 import { v4 as uuidv4 } from "uuid";
@@ -32,7 +32,11 @@ type AppAction =
   | { type: "ADD_TO_CART"; payload: Product }
   | { type: "REMOVE_FROM_CART"; payload: string }
   | { type: "UPDATE_QUANTITY"; payload: { id: string; quantity: number } }
-  | { type: "TOGGLE_DARK_MODE" };
+  | { type: "TOGGLE_DARK_MODE" }
+  | {
+      type: "ADD_REVIEW";
+      payload: { productId: string; review: Omit<Review, "id" | "date"> };
+    };
 
 const initialState: AppState = {
   cart: [],
@@ -93,6 +97,25 @@ function appReducer(state: AppState, action: AppAction): AppState {
         ...state,
         isDarkMode: newDarkMode,
       };
+    case "ADD_REVIEW": {
+      const { productId, review } = action.payload;
+      const newReview: Review = {
+        id: uuidv4(),
+        name: review.name,
+        rating: review.rating,
+        comment: review.comment,
+        date: new Date().toISOString().split("T")[0], // Format as YYYY-MM-DD
+      };
+
+      return {
+        ...state,
+        products: state.products.map((product) =>
+          product.id === productId
+            ? { ...product, reviews: [...product.reviews, newReview] }
+            : product
+        ),
+      };
+    }
     default:
       return state;
   }
@@ -149,6 +172,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
           `${item.name} quantity updated to ${action.payload.quantity}`,
           "success"
         );
+      }
+    } else if (action.type === "ADD_REVIEW") {
+      const product = state.products.find(
+        (p) => p.id === action.payload.productId
+      );
+      if (product) {
+        showToast(`Thank you for reviewing ${product.name}!`, "success");
       }
     }
   };

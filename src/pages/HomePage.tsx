@@ -1,14 +1,32 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ProductCard } from "../components/ProductCard";
 import { useApp } from "../context/AppContext";
 
 export const HomePage: React.FC = () => {
   const { state, dispatch } = useApp();
+  const heroRef = useRef<HTMLDivElement>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     // Scroll to top when component mounts
     window.scrollTo(0, 0);
+  }, []);
+
+  // Mouse parallax effect
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (heroRef.current) {
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        setMousePosition({ x, y });
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
   }, []);
 
   // Get featured products (first 4 products)
@@ -17,32 +35,83 @@ export const HomePage: React.FC = () => {
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-900 to-purple-900 text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1612865547334-09cb8cb455da?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-900 to-purple-900 opacity-90"></div>
+      <section
+        ref={heroRef}
+        className="relative bg-gradient-to-r from-blue-900 to-purple-900 text-white overflow-hidden min-h-[90vh]"
+      >
+        <div className="absolute inset-0">
+          <div
+            className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1571624436279-b272aff752b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center bg-fixed opacity-40"
+            style={{
+              transform: `translate(${mousePosition.x * -20}px, ${
+                mousePosition.y * -20
+              }px)`,
+              transition: "transform 0.2s ease-out",
+            }}
+          ></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-purple-900/70 to-black/60"></div>
         </div>
 
-        <div className="container mx-auto px-4 py-24 md:py-32 relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
-              <span className="block">Discover Luxury at</span>
+        {/* Floating designer elements */}
+        <div
+          className="hidden md:block absolute top-1/4 left-1/6 w-24 h-24 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-2xl animate-pulse"
+          style={{
+            transform: `translate(${mousePosition.x * 30}px, ${
+              mousePosition.y * -30
+            }px)`,
+            transition: "transform 0.3s ease-out",
+          }}
+        ></div>
+        <div
+          className="hidden md:block absolute bottom-1/3 right-1/6 w-32 h-32 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-2xl animate-pulse"
+          style={{
+            animationDelay: "1s",
+            transform: `translate(${mousePosition.x * -40}px, ${
+              mousePosition.y * 40
+            }px)`,
+            transition: "transform 0.3s ease-out",
+          }}
+        ></div>
+        <div
+          className="hidden md:block absolute top-1/2 right-1/4 w-16 h-16 rounded-full bg-gradient-to-r from-pink-500/20 to-blue-500/20 backdrop-blur-2xl animate-pulse"
+          style={{
+            animationDelay: "2s",
+            transform: `translate(${mousePosition.x * 25}px, ${
+              mousePosition.y * 25
+            }px)`,
+            transition: "transform 0.3s ease-out",
+          }}
+        ></div>
+
+        <div className="container mx-auto px-4 py-32 md:py-48 lg:py-56 relative z-10 flex flex-col justify-center h-full">
+          <div
+            className="max-w-3xl mx-auto text-center"
+            style={{
+              transform: `translate(${mousePosition.x * 10}px, ${
+                mousePosition.y * 10
+              }px)`,
+              transition: "transform 0.4s ease-out",
+            }}
+          >
+            <h1 className="text-5xl md:text-7xl font-bold mb-8 animate-fade-in leading-tight">
+              <span className="block mb-2">Discover Luxury at</span>
               <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-purple-300">
                 Your Fingertips
               </span>
             </h1>
 
-            <p className="text-xl md:text-2xl text-blue-100 mb-10 animate-fade-in animation-delay-200">
+            <p className="text-xl md:text-2xl text-blue-100 mb-12 animate-fade-in animation-delay-200 max-w-2xl mx-auto">
               Elevate your lifestyle with premium products curated for the
-              discerning customer.
+              discerning customer. Indulge in excellence.
             </p>
 
-            <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in animation-delay-400">
+            <div className="flex flex-col sm:flex-row justify-center gap-6 animate-fade-in animation-delay-400">
               <Link
                 to="/products"
-                className="px-8 py-4 rounded-md bg-white text-blue-900 font-semibold hover:bg-blue-50 transition-colors duration-300 transform hover:scale-105"
+                className="relative px-8 py-4 rounded-md bg-white text-blue-900 font-semibold hover:bg-blue-50 transition-colors duration-300 transform hover:scale-105 shadow-xl overflow-hidden group"
               >
-                Shop Now
+                <span className="relative z-10">Shop Now</span>
+                <span className="absolute inset-0 bg-gradient-to-r from-blue-400/0 via-blue-400/30 to-blue-400/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></span>
               </Link>
               <a
                 href="#featured"
@@ -55,7 +124,7 @@ export const HomePage: React.FC = () => {
         </div>
 
         {/* Decorative elements */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white dark:from-gray-900 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white dark:from-gray-900 to-transparent"></div>
         <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-full h-16">
           <svg
             viewBox="0 0 1440 48"
