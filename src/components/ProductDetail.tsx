@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { Product, Review } from "../types/product";
+import type { Product } from "../types/product";
 import { useApp } from "../context/AppContext";
 
 interface ProductDetailProps {
