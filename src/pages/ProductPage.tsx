@@ -190,7 +190,7 @@ export const ProductPage: React.FC = () => {
           product && (
             <>
               {/* Product detail section */}
-              <ProductDetail product={product} onAddReview={handleAddReview} />
+              <ProductDetail product={product} />
 
               {/* Product tabs (Description, Specs, Reviews) */}
               <div className="mt-16">

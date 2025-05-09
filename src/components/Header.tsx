@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useApp } from "../context/AppContext";
-import { DarkModeToggle } from "./DarkModeToggle";
 
 export const Header: React.FC = () => {
   const { state, dispatch } = useApp();

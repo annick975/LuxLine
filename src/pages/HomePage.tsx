@@ -4,12 +4,12 @@ import { ProductCard } from "../components/ProductCard";
 import { useApp } from "../context/AppContext";
 
 export const HomePage: React.FC = () => {
-  const { state, dispatch } = useApp();
+  const { state } = useApp();
   const heroRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
+  // Scroll to top when component mounts
   useEffect(() => {
-    // Scroll to top when component mounts
     window.scrollTo(0, 0);
   }, []);
 

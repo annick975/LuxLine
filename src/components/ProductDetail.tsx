@@ -4,13 +4,9 @@ import { useApp } from "../context/AppContext";
 
 interface ProductDetailProps {
   product: Product;
-  onAddReview: (review: Omit<Review, "id" | "date">) => void;
 }
 
-export const ProductDetail: React.FC<ProductDetailProps> = ({
-  product,
-  onAddReview,
-}) => {
+export const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
   const { dispatch } = useApp();
   const [quantity, setQuantity] = useState(1);
   const [isImageHovered, setIsImageHovered] = useState(false);

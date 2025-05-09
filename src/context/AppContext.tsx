@@ -2,10 +2,10 @@ import React, {
   createContext,
   useContext,
   useReducer,
-  ReactNode,
   useEffect,
   useState,
 } from "react";
+import type { ReactNode } from "react";
 import type { Product, Review } from "../types/product";
 import { products } from "../data/mockData";
 import { ToastMessage } from "../components/ToastMessage";
@@ -142,9 +142,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   // Add toast notification when cart is updated
   useEffect(() => {
     // We don't want to show a toast on initial load
-    const handleCartChanges = () => {};
-
-    return () => {};
+    // Empty effect for now
   }, []);
 
   // Apply dark mode on initial load
