@@ -45,29 +45,20 @@ export const Header: React.FC = () => {
       <div className="container mx-auto px-4 flex items-center justify-between">
         <Link to="/" className="flex items-center group relative">
           <div className="absolute -inset-2 bg-gradient-to-r from-blue-600/20 to-purple-600/20 dark:from-blue-400/10 dark:to-purple-400/10 rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          <div className="mr-2 text-blue-600 dark:text-blue-400 relative z-10">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8 transform group-hover:rotate-12 transition-all duration-500"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 100-12 6 6 0 000 12z"
-                clipRule="evenodd"
-              />
-              <path d="M10 4a1 1 0 011 1v5a1 1 0 01-1 1 1 1 0 01-1-1V5a1 1 0 011-1z" />
-              <path d="M14 10a1 1 0 01-1 1h-3a1 1 0 110-2h3a1 1 0 011 1z" />
-            </svg>
-          </div>
-          <div className="relative z-10">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent drop-shadow-sm">
-              LuxLine
-            </h1>
-            <span className="text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 absolute -bottom-3 right-0 opacity-0 group-hover:opacity-100 transform group-hover:translate-y-0 -translate-y-1 transition-all duration-500">
-              Premium
-            </span>
+          <div className="relative z-10 flex items-center">
+            <img
+              src="/LuxLine.png"
+              alt="LuxLine Logo"
+              className="h-5 mr-2 transform group-hover:scale-110 transition-all duration-500"
+            />
+            <div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent drop-shadow-sm">
+                LuxLine
+              </h1>
+              <span className="text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 absolute -bottom-3 right-0 opacity-0 group-hover:opacity-100 transform group-hover:translate-y-0 -translate-y-1 transition-all duration-500">
+                Premium
+              </span>
+            </div>
           </div>
         </Link>
 
